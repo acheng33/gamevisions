@@ -81,9 +81,9 @@ WSGI_APPLICATION = 'GameVisions.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': './my.cnf',
-        },
+        'NAME' : 'GameVisions',
+        'USER' : 'djangouser',
+        'PASSWORD': 'password',
     }
 }
 

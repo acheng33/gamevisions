@@ -24,7 +24,7 @@ class Platform(models.Model):
     mods = models.BooleanField()
 
     def __str__(self):
-        return self.game_name + self.platform_name
+        return str(self.game_name) + " (" + self.platform_name + ")"
 
 class User(models.Model):
     username = models.CharField(max_length = 50, primary_key = True)
@@ -36,10 +36,11 @@ class User(models.Model):
 
 class Preference(models.Model):
     class Meta:
-        unique_together = (('username', 'preference'))
+        unique_together = (('username', 'preference_key', 'preference_value'))
 
     username = models.ForeignKey('User', on_delete = models.CASCADE)
-    preference = models.CharField(max_length = 150)
+    preference_key = models.CharField(max_length = 100)
+    preference_value = models.CharField(max_length = 150)
 
     def __str__(self):
-        return self.username + self.preference
+        return "[" + str(self.username) + "] " + self.preference_key + " : " + self.preference_value

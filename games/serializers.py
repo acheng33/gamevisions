@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from .mixins import ModelToDictMixin
 from .models import Game
 from .models import Platform
 

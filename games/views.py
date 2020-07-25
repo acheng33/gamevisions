@@ -11,6 +11,7 @@ from .serializers import *
 
 pp = pprint.PrettyPrinter(indent=4)
 
+
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
     columns = [col[0] for col in cursor.description]
@@ -52,19 +53,24 @@ def games_list(request):
             return Response(serializer.data)
 
     elif request.method == 'POST':
-        print(request.data)
 
-        serializer = GameSerializer(data=request.data)
+        serializer = GameDetailsSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         with connection.cursor() as cursor:
             cursor.execute("INSERT INTO games_game (game_name, release_year, time_to_complete, genre) VALUES (%s, %s, %s, %s)", [
                            request.data["game_name"], request.data["release_year"], request.data["time_to_complete"], request.data["genre"]])
+
+            for platform in request.data["platforms"]:
+                cursor.execute("INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s)", [
+                    platform["platform_name"], platform["rating"], platform["single_player"], platform[
+                        "multiplayer"], platform["cooperative"], platform["mods"], request.data["game_name"]
+                ])
         return Response(status=status.HTTP_201_CREATED)
 
 
-@api_view(['PUT', 'DELETE'])  # /api/games/:enc_game_name
+@api_view(['PUT'])  # /api/games/:enc_game_name
 def game_details(request, enc_game_name):
     game_name = urllib.parse.unquote(enc_game_name)
     try:
@@ -89,8 +95,94 @@ def game_details(request, enc_game_name):
             print(connection.queries)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    elif request.method == 'DELETE':
+
+@api_view(['GET', 'POST'])  # /api/:enc_username
+def user_preferences(request, enc_username):
+    current_user = urllib.parse.unquote(enc_username)
+
+    if request.method == 'GET':
         with connection.cursor() as cursor:
             cursor.execute(
-                "DELETE FROM games_game WHERE game_name = %s", [game_name])
-        return Response(status=status.HTTP_204_NO_CONTENT)
+                'SELECT * FROM games_user, games_preference WHERE games_user.username = games_preference.username_id AND games_user.username = %s', [current_user])
+            data = dictfetchall(cursor)
+
+            user_preference_dictionary = {}
+
+            for user in data:
+                if user["username"] in user_preference_dictionary:
+                    user_preference_dictionary[user["username"]]["preferences"].append(
+                        dict((k, user[k]) for k in ("preference_value", "preference_key")))
+                else:
+                    user_preference_dictionary[user["username"]] = dict((k, user[k]) for k in (
+                        "username", "email", "pwd"))
+                    user_preference_dictionary[user["username"]]["preferences"] = [(
+                        dict((k, user[k]) for k in ("preference_value", "preference_key")))]
+
+            preferences_data = []
+            for key, value in user_preference_dictionary.items():
+                preferences_data.append(value)
+
+            pp.pprint(preferences_data)
+
+            serializer = UserPreferencesSerializer(
+                preferences_data, context={'request': request}, many=True)
+
+            return Response(serializer.data)
+    elif request.method == 'POST':
+        pp.pprint(request.data)
+
+        serializer = PreferenceSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT INTO games_preference (preference_value, username_id, preference_key) VALUES (%s, %s, %s)", [
+                           request.data["preference_value"], request.data["username_id"], request.data["preference_key"]])
+        return Response(status=status.HTTP_201_CREATED)
+
+
+# /api/:enc_username/:enc_preference_key/:enc_preferece_value
+@api_view(['GET', 'DELETE'])
+def delete_preference(request, enc_username, enc_preference_key, enc_preference_value):
+    print(urllib.parse.unquote(enc_username))
+    print(urllib.parse.unquote(enc_preference_key))
+    print(urllib.parse.unquote(enc_preference_value))
+    current_user = urllib.parse.unquote(enc_username)
+    current_preference_key = urllib.parse.unquote(enc_preference_key)
+    current_preference_value = urllib.parse.unquote(enc_preference_value)
+
+    current_preference_value = current_preference_value.replace("/", "")
+
+    print( current_preference_value)
+
+    if request.method == 'GET':
+        with connection.cursor() as cursor:
+            cursor.execute(
+                'SELECT * FROM games_user, games_preference WHERE games_user.username = games_preference.username_id AND games_user.username = %s', [current_user])
+            data = dictfetchall(cursor)
+
+            user_preference_dictionary = {}
+
+            for user in data:
+                if user["username"] in user_preference_dictionary:
+                    user_preference_dictionary[user["username"]]["preferences"].append(
+                        dict((k, user[k]) for k in ("preference_value", "preference_key")))
+                else:
+                    user_preference_dictionary[user["username"]] = dict((k, user[k]) for k in (
+                        "username", "email", "pwd"))
+                    user_preference_dictionary[user["username"]]["preferences"] = [(
+                        dict((k, user[k]) for k in ("preference_value", "preference_key")))]
+
+            preferences_data = []
+            for key, value in user_preference_dictionary.items():
+                preferences_data.append(value)
+
+            serializer = UserPreferencesSerializer(
+                preferences_data, context={'request': request}, many=True)
+
+            return Response(serializer.data)
+
+    elif request.method == 'DELETE':
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM games_preference WHERE username_id = %s AND preference_value = %s AND preference_key = %s", [
+                           current_user, current_preference_value, current_preference_key])

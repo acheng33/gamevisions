@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import Game
-from .models import Platform
+from .models import *
 
 
 class GameSerializer(serializers.ModelSerializer):
@@ -16,6 +15,18 @@ class PlatformSerializer(serializers.ModelSerializer):
                   'single_player', 'multiplayer', 'cooperative', 'mods')
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'pwd')
+
+
+class PreferenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Preference
+        fields = ('username_id', 'preference_key', 'preference_value')
+
+
 class GameDetailsSerializer(serializers.ModelSerializer):
     platforms = PlatformSerializer(many=True, read_only=True)
 
@@ -23,3 +34,11 @@ class GameDetailsSerializer(serializers.ModelSerializer):
         model = Game
         fields = ('game_name', 'release_year',
                   'time_to_complete', 'genre', 'platforms')
+
+
+class UserPreferencesSerializer(serializers.ModelSerializer):
+    preferences = PreferenceSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('username','preferences')

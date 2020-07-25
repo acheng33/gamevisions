@@ -9,7 +9,7 @@ import { API_URL } from "../constants";
 
 class Home extends Component {
   state = {
-    students: []
+    games: []
   };
 
   componentDidMount() {
@@ -30,7 +30,7 @@ class Home extends Component {
         <Row>
           <Col>
             <GameList
-              students={this.state.games}
+              games={this.state.games}
               resetState={this.resetState}
             />
           </Col>

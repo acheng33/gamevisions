@@ -8,17 +8,17 @@ import { API_URL } from "../constants";
 class NewGameForm extends React.Component {
 
   state = {
-    pk: 0,
     game_name: "",
     release_year: null,
     time_to_complete: null,
-    genre: ""
+    genre: "",
+    platforms: [{}],
   };
 
   componentDidMount() {
     if (this.props.game) {
-      const { pk, game_name, release_year, time_to_complete, genre } = this.props.game;
-      this.setState({ pk, game_name, release_year, time_to_complete, genre });
+      const { game_name, release_year, time_to_complete, genre, platforms } = this.props.game;
+      this.setState({ game_name, release_year, time_to_complete, genre, platforms });
     }
   }
 
@@ -61,7 +61,7 @@ class NewGameForm extends React.Component {
         <FormGroup>
           <Label for="release_year">Release Year:</Label>
           <Input
-            type="integer"
+            type="number"
             name="release_year"
             onChange={this.onChange}
             value={this.defaultIfEmpty(this.state.release_year)}
@@ -70,7 +70,7 @@ class NewGameForm extends React.Component {
         <FormGroup>
           <Label for="time_to_complete">Time:</Label>
           <Input
-            type="text"
+            type="number"
             name="time_to_complete"
             onChange={this.onChange}
             value={this.defaultIfEmpty(this.state.time_to_complete)}
@@ -83,6 +83,15 @@ class NewGameForm extends React.Component {
             name="genre"
             onChange={this.onChange}
             value={this.defaultIfEmpty(this.state.genre)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="platforms">Platform:</Label>
+          <Input
+            type="object"
+            name="platforms"
+            onChange={this.onChange}
+            value={this.defaultIfEmpty(this.state.platforms)}
           />
         </FormGroup>
         <Button>Send</Button>

@@ -15,6 +15,7 @@ class GameList extends Component {
             <th>Release Year</th>
             <th>Complete Time</th>
             <th>Genre</th>
+            <th>Platforms</th>
             <th></th>
           </tr>
         </thead>
@@ -32,6 +33,7 @@ class GameList extends Component {
                 <td>{games.release_year}</td>
                 <td>{games.time_to_complete}</td>
                 <td>{games.genre}</td>
+                <td>{games.platforms}</td>
                 <td align="center">
                   <NewGameModal
                     create={false}

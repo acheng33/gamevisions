@@ -22,4 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^api/games/$', views.games_list),
     re_path(r'^api/games/(.+)$', views.game_details),
+    re_path(r'^api/user/$', views.user_preferences),
+    re_path(r'^api/user/(.+)/(.+)/(.+)$', views.delete_preference),
 ]

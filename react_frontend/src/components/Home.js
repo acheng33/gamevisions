@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Col, Container, Row } from "reactstrap";
-import StudentList from "./StudentList";
-import NewStudentModal from "./NewStudentsModal";
+import GameList from "./GameList";
+import NewGameModal from "./NewGameModal";
 
 import axios from "axios";
 
@@ -16,12 +16,12 @@ class Home extends Component {
     this.resetState();
   }
 
-  getStudents = () => {
-    axios.get(API_URL).then(res => this.setState({ students: res.data }));
+  getGames = () => {
+    axios.get(API_URL).then(res => this.setState({ games: res.data }));
   };
 
   resetState = () => {
-    this.getStudents();
+    this.getGames();
   };
 
   render() {
@@ -29,15 +29,15 @@ class Home extends Component {
       <Container style={{ marginTop: "20px" }}>
         <Row>
           <Col>
-            <StudentList
-              students={this.state.students}
+            <GameList
+              students={this.state.games}
               resetState={this.resetState}
             />
           </Col>
         </Row>
         <Row>
           <Col>
-            <NewStudentModal create={true} resetState={this.resetState} />
+            <NewGameModal create={true} resetState={this.resetState} />
           </Col>
         </Row>
       </Container>

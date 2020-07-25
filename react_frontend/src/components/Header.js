@@ -4,7 +4,7 @@ class Header extends Component {
   render() {
     return (
       <div className="text-center">
-        <h1>Header</h1>
+        <h1>GameVisions</h1>
         <hr />
       </div>
     );

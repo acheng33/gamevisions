@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from "react";
 import { Button, Modal, ModalHeader, ModalBody } from "reactstrap";
-import NewStudentForm from "./NewStudentForm";
+import NewGameForm from "./NewGameForm";
 
-class NewStudentModal extends Component {
+class NewGameModal extends Component {
   state = {
     modal: false
   };
@@ -16,10 +16,10 @@ class NewStudentModal extends Component {
   render() {
     const create = this.props.create;
 
-    var title = "Editing Student";
+    var title = "Editing Game";
     var button = <Button onClick={this.toggle}>Edit</Button>;
     if (create) {
-      title = "Creating New Student";
+      title = "Creating New Game";
 
       button = (
         <Button
@@ -40,10 +40,10 @@ class NewStudentModal extends Component {
           <ModalHeader toggle={this.toggle}>{title}</ModalHeader>
 
           <ModalBody>
-            <NewStudentForm
+            <NewGameForm
               resetState={this.props.resetState}
               toggle={this.toggle}
-              student={this.props.student}
+              game={this.props.game}
             />
           </ModalBody>
         </Modal>
@@ -52,4 +52,4 @@ class NewStudentModal extends Component {
   }
 }
 
-export default NewStudentModal;
+export default NewGameModal;

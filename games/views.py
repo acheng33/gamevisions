@@ -23,6 +23,7 @@ def dictfetchall(cursor):
 
 @api_view(['GET', 'POST'])  # /api/games
 def games_list(request):
+    print("getting games list matching user")
     if request.method == 'GET':
         with connection.cursor() as cursor:
             cursor.execute(
@@ -53,6 +54,7 @@ def games_list(request):
             return Response(serializer.data)
 
     elif request.method == 'POST':
+        print("inserting new games into database")
 
         serializer = GameDetailsSerializer(data=request.data)
         if not serializer.is_valid():
@@ -98,7 +100,10 @@ def game_details(request, enc_game_name):
 
 @api_view(['GET', 'POST'])  # /api/:enc_username
 def user_preferences(request, enc_username):
+    print("entered user_preferences")
     current_user = urllib.parse.unquote(enc_username)
+    current_user = current_user.replace("/", "")
+    print(current_user)
 
     if request.method == 'GET':
         with connection.cursor() as cursor:
@@ -137,23 +142,22 @@ def user_preferences(request, enc_username):
 
         with connection.cursor() as cursor:
             cursor.execute("INSERT INTO games_preference (preference_value, username_id, preference_key) VALUES (%s, %s, %s)", [
-                           request.data["preference_value"], request.data["username_id"], request.data["preference_key"]])
+                           request.data["preference_value"], current_user, request.data["preference_key"]])
         return Response(status=status.HTTP_201_CREATED)
 
 
 # /api/:enc_username/:enc_preference_key/:enc_preferece_value
 @api_view(['GET', 'DELETE'])
 def delete_preference(request, enc_username, enc_preference_key, enc_preference_value):
-    print(urllib.parse.unquote(enc_username))
-    print(urllib.parse.unquote(enc_preference_key))
-    print(urllib.parse.unquote(enc_preference_value))
+    print("entered delete preference")
+    
     current_user = urllib.parse.unquote(enc_username)
     current_preference_key = urllib.parse.unquote(enc_preference_key)
     current_preference_value = urllib.parse.unquote(enc_preference_value)
 
     current_preference_value = current_preference_value.replace("/", "")
 
-    print( current_preference_value)
+    print(current_preference_value)
 
     if request.method == 'GET':
         with connection.cursor() as cursor:

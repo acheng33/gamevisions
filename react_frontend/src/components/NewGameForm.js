@@ -3,7 +3,7 @@ import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 
 import axios from "axios";
 
-import { API_URL } from "../constants";
+import { API_URL } from "../constants/index";
 
 class NewGameForm extends React.Component {
 
@@ -12,13 +12,13 @@ class NewGameForm extends React.Component {
     release_year: null,
     time_to_complete: null,
     genre: "",
-    platforms: [{}],
+    platforms: [],
   };
 
   componentDidMount() {
-    if (this.props.game) {
-      const { game_name, release_year, time_to_complete, genre, platforms } = this.props.game;
-      this.setState({ game_name, release_year, time_to_complete, genre, platforms });
+    if (this.props.games) {
+      const { game_name, release_year, time_to_complete, genre, platform_name,rating, single_player, multiplayer, cooperative, mods } = this.props.games;
+      this.setState({ game_name, release_year, time_to_complete, genre, platform_name,rating, single_player, multiplayer, cooperative, mods });
     }
   }
 
@@ -27,6 +27,7 @@ class NewGameForm extends React.Component {
   };
 
   createGame = e => {
+    console.log("create is triggered")
     e.preventDefault();
     axios.post(API_URL, this.state).then(() => {
       this.props.resetState();
@@ -35,8 +36,10 @@ class NewGameForm extends React.Component {
   };
 
   editGame = e => {
+    console.log("reach put")
     e.preventDefault();
     axios.put(API_URL + this.state.pk, this.state).then(() => {
+        console.log("put is triggered")
       this.props.resetState();
       this.props.toggle();
     });
@@ -86,12 +89,57 @@ class NewGameForm extends React.Component {
           />
         </FormGroup>
         <FormGroup>
-          <Label for="platforms">Platform:</Label>
+          <Label for="platform_name">Platform Name:</Label>
           <Input
-            type="object"
-            name="platforms"
+            type="text"
+            name="platform_name"
             onChange={this.onChange}
-            value={this.defaultIfEmpty(this.state.platforms)}
+            value={this.defaultIfEmpty(this.state.platform_name)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="rating">Rating:</Label>
+          <Input
+            type="number"
+            name="rating"
+            onChange={this.onChange}
+            value={this.defaultIfEmpty(this.state.rating)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="single_player">Single Player:</Label>
+          <Input
+            type="number"
+            name="single_player"
+            onChange={this.onChange}
+            value={this.defaultIfEmpty(this.state.single_player)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="multiplayer">Multi-player:</Label>
+          <Input
+            type="number"
+            name="multiplayer"
+            onChange={this.onChange}
+            value={this.defaultIfEmpty(this.state.multiplayer)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="cooperative">Cooperative:</Label>
+          <Input
+            type="number"
+            name="cooperative"
+            onChange={this.onChange}
+            value={this.defaultIfEmpty(this.state.cooperative)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="mods">Mods:</Label>
+          <Input
+            type="number"
+            name="mods"
+            onChange={this.onChange}
+            value={this.defaultIfEmpty(this.state.mods)}
           />
         </FormGroup>
         <Button>Send</Button>

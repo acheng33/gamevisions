@@ -1,15 +1,14 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import Home from "../components/Home";
 
 
 
 const GameListpage = () => {
   return (
-    <div className="GameListpage">
-      <div className="content">
-        <h1>This is the game list page </h1>
-      </div>
-    </div>
+    <Fragment>
+      <Home />
+    </Fragment>
   );
 };
 

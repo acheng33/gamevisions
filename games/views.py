@@ -23,6 +23,7 @@ def dictfetchall(cursor):
 
 @api_view(['GET', 'POST'])  # /api/games
 def games_list(request):
+    print("getting games list matching user")
     if request.method == 'GET':
         with connection.cursor() as cursor:
             cursor.execute(
@@ -53,24 +54,18 @@ def games_list(request):
             return Response(serializer.data)
 
     elif request.method == 'POST':
-
-        serializer = GameDetailsSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print("inserting new games into database")
 
         with connection.cursor() as cursor:
             cursor.execute("INSERT INTO games_game (game_name, release_year, time_to_complete, genre) VALUES (%s, %s, %s, %s)", [
                            request.data["game_name"], request.data["release_year"], request.data["time_to_complete"], request.data["genre"]])
-
-            for platform in request.data["platforms"]:
-                cursor.execute("INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s)", [
-                    platform["platform_name"], platform["rating"], platform["single_player"], platform[
-                        "multiplayer"], platform["cooperative"], platform["mods"], request.data["game_name"]
-                ])
+            cursor.execute("INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s)", [
+                request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data[
+                    "multiplayer"], request.data["cooperative"], request.data["mods"], request.data["game_name"]])
         return Response(status=status.HTTP_201_CREATED)
 
 
-@api_view(['PUT'])  # /api/games/:enc_game_name
+@ api_view(['PUT'])  # /api/games/:enc_game_name
 def game_details(request, enc_game_name):
     game_name = urllib.parse.unquote(enc_game_name)
     try:
@@ -90,15 +85,18 @@ def game_details(request, enc_game_name):
     if request.method == 'PUT':
         with connection.cursor() as cursor:
             resp = cursor.execute("UPDATE games_game SET release_year = %s, time_to_complete = %s, genre = %s WHERE game_name = %s ", [
-                                  request.data["release_year"], request.data["time_to_complete"], request.data["genre"], game_name])
+                request.data["release_year"], request.data["time_to_complete"], request.data["genre"], game_name])
             print(resp)
             print(connection.queries)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET', 'POST'])  # /api/:enc_username
+@ api_view(['GET', 'POST'])  # /api/:enc_username
 def user_preferences(request, enc_username):
+    print("entered user_preferences")
     current_user = urllib.parse.unquote(enc_username)
+    current_user = current_user.replace("/", "")
+    print(current_user)
 
     if request.method == 'GET':
         with connection.cursor() as cursor:
@@ -137,23 +135,22 @@ def user_preferences(request, enc_username):
 
         with connection.cursor() as cursor:
             cursor.execute("INSERT INTO games_preference (preference_value, username_id, preference_key) VALUES (%s, %s, %s)", [
-                           request.data["preference_value"], request.data["username_id"], request.data["preference_key"]])
+                           request.data["preference_value"], current_user, request.data["preference_key"]])
         return Response(status=status.HTTP_201_CREATED)
 
 
 # /api/:enc_username/:enc_preference_key/:enc_preferece_value
-@api_view(['GET', 'DELETE'])
+@ api_view(['GET', 'DELETE'])
 def delete_preference(request, enc_username, enc_preference_key, enc_preference_value):
-    print(urllib.parse.unquote(enc_username))
-    print(urllib.parse.unquote(enc_preference_key))
-    print(urllib.parse.unquote(enc_preference_value))
+    print("entered delete preference")
+
     current_user = urllib.parse.unquote(enc_username)
     current_preference_key = urllib.parse.unquote(enc_preference_key)
     current_preference_value = urllib.parse.unquote(enc_preference_value)
 
     current_preference_value = current_preference_value.replace("/", "")
 
-    print( current_preference_value)
+    print(current_preference_value)
 
     if request.method == 'GET':
         with connection.cursor() as cursor:

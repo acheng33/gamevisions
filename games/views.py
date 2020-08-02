@@ -183,3 +183,24 @@ def delete_preference(request, enc_username, enc_preference_key, enc_preference_
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM games_preference WHERE username_id = %s AND preference_value = %s AND preference_key = %s", [
                            current_user, current_preference_value, current_preference_key])
+
+
+@api_view(['GET'])
+def test_procedures(request, enc_game_name):
+    game_name = urllib.parse.unquote(enc_game_name)
+    print(game_name)
+
+    if request.method == 'GET':
+        with connection.cursor() as cursor:
+            cursor.callproc('returnAll', [game_name])
+            data = dictfetchall(cursor)
+
+            game_platform_dictionary = {}
+
+            for game in data:
+                print(game)
+                print(type(game))
+
+            serializer = PlatformSerializer(
+                data, context = {'request' : request}, many = True)
+            return Response(serializer.data)

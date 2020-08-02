@@ -24,4 +24,5 @@ urlpatterns = [
     re_path(r'^api/games/(.+)$', views.game_details),
     re_path(r'^api/user/(.+)/(.+)/(.+)', views.delete_preference),
     re_path(r'^api/user/(.+)$', views.user_preferences),
+    re_path(r'^api/test/(.+)$', views.test_procedures),
 ]

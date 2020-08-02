@@ -19,6 +19,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'mz#_-ombcqjo&8k##(mv@m7_y7!g%djz))s9rsg#mpd$esf%4j'
 
@@ -40,8 +42,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'games'
+    'games',
+    "knox"
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -59,7 +66,7 @@ ROOT_URLCONF = 'GameVisions.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(SETTINGS_PATH, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,7 +90,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME' : 'gamevisions',
         'USER' : 'root',
-        'PASSWORD': '',
+        'PASSWORD' : '',
     }
 }
 

@@ -183,3 +183,34 @@ def delete_preference(request, enc_username, enc_preference_key, enc_preference_
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM games_preference WHERE username_id = %s AND preference_value = %s AND preference_key = %s", [
                            current_user, current_preference_value, current_preference_key])
+
+@api_view(['GET'])
+def percentage_matches(request, enc_username):
+    current_user = urllib.parse.unquote(enc_username)
+    print(current_user)
+
+    if request.method == 'GET':
+        with connection.cursor() as cursor:
+            cursor.callproc('givePercentage', [current_user])
+            data = dictfetchall(cursor)
+
+            game_with_percentages_dictionary = {}
+
+            for game in data:
+                if game["game_name"] in game_with_percentages_dictionary:
+                    game_with_percentages_dictionary[game["game_name"]]["platforms"].append(
+                        dict((k, game[k]) for k in ("platform_name", "rating", "single_player", "multiplayer", "cooperative", "mods", "percent_match")))
+                else:
+                    game_with_percentages_dictionary[game["game_name"]] = dict((k, game[k]) for k in (
+                        "game_name", "release_year", "time_to_complete", "genre"))
+                    game_with_percentages_dictionary[game["game_name"]]["platforms"] = [(
+                        dict((k, game[k]) for k in ("platform_name", "rating", "single_player", "multiplayer", "cooperative", "mods", "percent_match")))]
+
+
+            games_data = []
+            for key, value in game_with_percentages_dictionary.items():
+                games_data.append(value)
+
+            pp.pprint(games_data)
+
+            return Response(games_data)

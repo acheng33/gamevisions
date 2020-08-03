@@ -8,8 +8,9 @@ import { API_URL } from "../constants/index2";
 class NewPreferenceForm extends React.Component {
 
   state = {
-    username: "",
-    preferences: []
+    username_id: "",
+    preference_key: "",
+    preference_value: ""
   };
 
   componentDidMount() {
@@ -25,7 +26,7 @@ class NewPreferenceForm extends React.Component {
 
   createPreference = e => {
     e.preventDefault();
-    axios.post(API_URL, this.state).then(() => {
+    axios.post(API_URL + "pengwing", this.state).then(() => {
       this.props.resetState();
       this.props.toggle();
     });
@@ -52,7 +53,7 @@ class NewPreferenceForm extends React.Component {
             type="text"
             name="username_id"
             onChange={this.onChange}
-            value={this.defaultIfEmpty(this.state.preference_key)}
+            value={this.defaultIfEmpty(this.state.username_id)}
           />
         </FormGroup>
         <FormGroup>

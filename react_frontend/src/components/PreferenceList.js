@@ -12,32 +12,27 @@ class PreferenceList extends Component {
           <tr>
             <th>Username</th>
             <th>Preference Key</th>
-            <th>Preference Name</th>
+            <th>Preference Value</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {!preferences|| preferences.length <= 0 ? (
+          {!preferences || !preferences.preferences || preferences.preferences.length <= 0 ? (
             <tr>
               <td colSpan="6" align="center">
                 <b>Ops, no one here yet</b>
               </td>
             </tr>
           ) : (
-            preferences.map(preferences => (
-              <tr key={preferences.pk}>
-                <td>{preferences.username_id}</td>
-                <td>{preferences.preference_key}</td>
-                <td>{preferences.preferences_value}</td>
+            preferences.preferences.map(preference => (
+              <tr key={preference.pk}>
+                <td>{preferences.username}</td>
+                <td>{preference.preference_key}</td>
+                <td>{preference.preference_value}</td>
                 <td align="center">
-                  <NewPreferenceModal
-                    create={false}
-                    preferences={preferences}
-                    resetState={this.props.resetState}
-                  />
-                  &nbsp;&nbsp;
                   <RemovePreference
-                    pk={preferences.pk}
+                    preference_key={preference.preference_key}
+                    preference_value={preference.preference_value}
                     resetState={this.props.resetState}
                   />
                 </td>

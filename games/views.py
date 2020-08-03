@@ -183,6 +183,8 @@ def delete_preference(request, enc_username, enc_preference_key, enc_preference_
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM games_preference WHERE username_id = %s AND preference_value = %s AND preference_key = %s", [
                            current_user, current_preference_value, current_preference_key])
+        return Response(status=status.HTTP_204_NO_CONTENT)
+            
 
 @api_view(['GET'])
 def percentage_matches(request, enc_username):

@@ -16,8 +16,8 @@ class RemovePreference extends Component {
     }));
   };
 
-  deletePreference = pk => {
-    axios.delete(API_URL + pk).then(() => {
+  deletePreference = (preference_key, preference_value) => {
+    axios.delete("http://localhost:8000/api/preferences/" + "pengwing/" + preference_key + "/" + preference_value).then(() => {
       this.props.resetState();
       this.toggle();
     });
@@ -41,7 +41,7 @@ class RemovePreference extends Component {
             <Button
               type="button"
               color="primary"
-              onClick={() => this.deletePreference(this.props.pk)}
+              onClick={() => this.deletePreference(this.props.preference_key, this.props.preference_value)}
             >
               Yes
             </Button>

@@ -17,7 +17,7 @@ class Home extends Component {
   }
 
   getPreferences = () => {
-    axios.get(API_URL).then(res => this.setState({ preferences: res.data }));
+    axios.get(API_URL + "pengwing").then(res => this.setState({ preferences: res.data[0] }));
   };
 
   resetState = () => {
@@ -25,6 +25,7 @@ class Home extends Component {
   };
 
   render() {
+    console.log(this.state.preferences)
     return (
       <Container style={{ marginTop: "20px" }}>
         <Row>

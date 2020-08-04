@@ -19,7 +19,6 @@ class NewGameModal extends Component {
 
     var title = "Editing Game";
     var button = <Button onClick={this.toggle}>Edit</Button>;
-    var buttonCancel;
     if (create) {
       title = "Creating New Game";
 
@@ -33,20 +32,10 @@ class NewGameModal extends Component {
           Create New
         </Button>
       );
-
-      buttonCancel = (
-        <Link to="/profile">
-          <Button color="primary"
-            className="float-left"
-            onClick={this.toggle}
-            style={{ minWidth: "200px" }}>Cancel</Button>
-        </Link>
-      );
     }
 
     return (
       <Fragment>
-        {buttonCancel}
         {button}
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>{title}</ModalHeader>

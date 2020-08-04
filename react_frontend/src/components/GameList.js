@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Table } from "reactstrap";
 import NewGameModal from "./NewGameModal";
 
-import ConfirmRemovalModal from "./ConfirmRemovalModal";
+// import ConfirmRemovalModal from "./ConfirmRemovalModal";
 
 class GameList extends Component {
   render() {
@@ -39,10 +39,6 @@ class GameList extends Component {
                     resetState={this.props.resetState}
                   />
                   &nbsp;&nbsp;
-                  <ConfirmRemovalModal
-                    pk={games.pk}
-                    resetState={this.props.resetState}
-                  />
                 </td>
               </tr>
             ))

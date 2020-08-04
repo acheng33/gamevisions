@@ -19,25 +19,35 @@ class NewPreferenceModal extends Component {
 
     var title = "Editing Preference";
     var button = <Button onClick={this.toggle}>Edit</Button>;
-    var buttonCancel;
+    var buttonFind;
     if (create) {
       title = "Creating New Preference";
 
       button = (
         <Button
           color="primary"
-          className="float-right"
+          className="float-left"
           onClick={this.toggle}
           style={{ minWidth: "200px" }}
         >
           Create New
         </Button>
       );
+
+      buttonFind = (
+        <Link to="/recommend">
+          <Button color="primary"
+            className="float-right"
+            onClick={this.toggle}
+            style={{ minWidth: "200px" }}>Find Games</Button>
+        </Link>
+      );
     }
 
     return (
       <Fragment>
         {button}
+        {buttonFind}
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>{title}</ModalHeader>
 

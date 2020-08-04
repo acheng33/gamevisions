@@ -78,6 +78,7 @@ def game_details(request, enc_game_name):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     game = list(games)[0]
+    platform = request.data["platform_name"]
 
     print(len(games))
     print(game)
@@ -86,6 +87,11 @@ def game_details(request, enc_game_name):
         with connection.cursor() as cursor:
             resp = cursor.execute("UPDATE games_game SET release_year = %s, time_to_complete = %s, genre = %s WHERE game_name = %s ", [
                 request.data["release_year"], request.data["time_to_complete"], request.data["genre"], game_name])
+            cursor.execute(
+                """INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s) ON 
+                DUPLICATE KEY UPDATE platform_name = %s, rating = %s, single_player = %s, multiplayer = %s, cooperative = %s, mods = %s, game_name_id = %s""",
+                [request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data["multiplayer"], request.data["cooperative"], request.data["mods"],
+                    game_name, request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data["multiplayer"], request.data["cooperative"], request.data["mods"], game_name])
             print(resp)
             print(connection.queries)
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -184,7 +190,7 @@ def delete_preference(request, enc_username, enc_preference_key, enc_preference_
             cursor.execute("DELETE FROM games_preference WHERE username_id = %s AND preference_value = %s AND preference_key = %s", [
                            current_user, current_preference_value, current_preference_key])
         return Response(status=status.HTTP_204_NO_CONTENT)
-            
+
 
 @api_view(['GET'])
 def percentage_matches(request, enc_username):
@@ -207,7 +213,6 @@ def percentage_matches(request, enc_username):
                         "game_name", "release_year", "time_to_complete", "genre"))
                     game_with_percentages_dictionary[game["game_name"]]["platforms"] = [(
                         dict((k, game[k]) for k in ("platform_name", "rating", "single_player", "multiplayer", "cooperative", "mods", "percent_match")))]
-
 
             games_data = []
             for key, value in game_with_percentages_dictionary.items():

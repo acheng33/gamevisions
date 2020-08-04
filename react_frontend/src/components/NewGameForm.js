@@ -9,16 +9,28 @@ class NewGameForm extends React.Component {
 
   state = {
     game_name: "",
-    release_year: null,
-    time_to_complete: null,
+    release_year: 2020,
+    time_to_complete: 50,
     genre: "",
-    platforms: [],
+    platform_name: "",
+    rating: 1,
+    single_player: 0,
+    multiplayer: 0,
+    cooperative: 0,
+    mods: 0
   };
 
   componentDidMount() {
-    if (this.props.games) {
-      const { game_name, release_year, time_to_complete, genre, platform_name,rating, single_player, multiplayer, cooperative, mods } = this.props.games;
-      this.setState({ game_name, release_year, time_to_complete, genre, platform_name,rating, single_player, multiplayer, cooperative, mods });
+    if (this.props.game && this.props.platform) {
+      const { game_name, release_year, time_to_complete, genre } = this.props.game;
+      const { platform_name, rating, single_player, multiplayer, cooperative, mods } = this.props.platform;
+      this.setState({
+        game_name, release_year, time_to_complete, genre, platform_name, rating,
+        single_player: single_player ? 1 : 0,
+        multiplayer: multiplayer ? 1 : 0,
+        cooperative: cooperative ? 1 : 0,
+        mods: mods ? 1 : 0
+      });
     }
   }
 
@@ -29,7 +41,7 @@ class NewGameForm extends React.Component {
   createGame = e => {
     console.log("create is triggered")
     e.preventDefault();
-    axios.post(API_URL, this.state).then(() => {
+    axios.post("http://localhost:8000/api/games/", this.state).then(() => {
       this.props.resetState();
       this.props.toggle();
     });
@@ -38,8 +50,8 @@ class NewGameForm extends React.Component {
   editGame = e => {
     console.log("reach put")
     e.preventDefault();
-    axios.put(API_URL + this.state.pk, this.state).then(() => {
-        console.log("put is triggered")
+    axios.put("http://localhost:8000/api/games/" + this.state.game_name, this.state).then(() => {
+      console.log("put is triggered")
       this.props.resetState();
       this.props.toggle();
     });
@@ -51,7 +63,7 @@ class NewGameForm extends React.Component {
 
   render() {
     return (
-      <Form onSubmit={this.props.games ? this.editGame : this.createGame}>
+      <Form onSubmit={this.props.create ? this.createGame : this.editGame}>
         <FormGroup>
           <Label for="game_name">Game Name:</Label>
           <Input
@@ -110,6 +122,8 @@ class NewGameForm extends React.Component {
           <Label for="single_player">Single Player:</Label>
           <Input
             type="number"
+            min={0}
+            max={1}
             name="single_player"
             onChange={this.onChange}
             value={this.defaultIfEmpty(this.state.single_player)}
@@ -119,6 +133,8 @@ class NewGameForm extends React.Component {
           <Label for="multiplayer">Multi-player:</Label>
           <Input
             type="number"
+            min={0}
+            max={1}
             name="multiplayer"
             onChange={this.onChange}
             value={this.defaultIfEmpty(this.state.multiplayer)}
@@ -128,6 +144,8 @@ class NewGameForm extends React.Component {
           <Label for="cooperative">Cooperative:</Label>
           <Input
             type="number"
+            min={0}
+            max={1}
             name="cooperative"
             onChange={this.onChange}
             value={this.defaultIfEmpty(this.state.cooperative)}
@@ -137,6 +155,8 @@ class NewGameForm extends React.Component {
           <Label for="mods">Mods:</Label>
           <Input
             type="number"
+            min={0}
+            max={1}
             name="mods"
             onChange={this.onChange}
             value={this.defaultIfEmpty(this.state.mods)}

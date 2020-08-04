@@ -42,9 +42,11 @@ class NewGameModal extends Component {
 
           <ModalBody>
             <NewGameForm
+              create={create}
               resetState={this.props.resetState}
               toggle={this.toggle}
               game={this.props.game}
+              platform={this.props.platform}
             />
           </ModalBody>
         </Modal>

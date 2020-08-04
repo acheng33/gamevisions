@@ -25,6 +25,7 @@ class Home extends Component {
   };
 
   render() {
+    console.log(this.state.games)
     return (
       <Container style={{ marginTop: "20px" }}>
         <Row>

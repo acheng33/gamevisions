@@ -29,6 +29,7 @@ urlpatterns = [
     re_path(r'^api/preferences/(.+)/(.+)/(.+)', views.delete_preference),
     re_path(r'^api/user/(.+)$', views.user_preferences),
     re_path(r'^api/usergames/(.+)$', views.percentage_matches),
+    re_path(r'^api/username/$', views.usernames_list),
     url(r'^api/', include(endpoints)),
     url(r'^api/auth/', include('knox.urls')),
     url(r'^', TemplateView.as_view(template_name="index.html")),

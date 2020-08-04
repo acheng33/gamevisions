@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Table } from "reactstrap";
-import NewPreferenceModal from "./NewPreferenceModal";
 import RemovePreference from "./RemovePreference";
 
 class PreferenceList extends Component {

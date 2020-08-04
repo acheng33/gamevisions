@@ -3,14 +3,17 @@ import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 
 import axios from "axios";
 
-import { API_URL } from "../constants/index2";
+// import { API_URL } from "../constants/index2";
 
 class NewPreferenceForm extends React.Component {
+
+  // result = "";
 
   state = {
     username_id: "",
     preference_key: "",
-    preference_value: ""
+    preference_value: "",
+    currentUser: ""
   };
 
   componentDidMount() {
@@ -24,9 +27,13 @@ class NewPreferenceForm extends React.Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  getCurrentUser = () => {
+    axios.get("http://localhost:8000/api/username/").then(res => this.setState({ currentUser: res.data[0]["username"]}));
+  }
+
   createPreference = e => {
     e.preventDefault();
-    axios.post(API_URL + "pengwing", this.state).then(() => {
+    axios.post("http://localhost:8000/api/user/" + this.getCurrentUser(), this.state).then(() => {
       this.props.resetState();
       this.props.toggle();
     });
@@ -34,7 +41,7 @@ class NewPreferenceForm extends React.Component {
 
   editPreference = e => {
     e.preventDefault();
-    axios.put(API_URL + this.state.pk, this.state).then(() => {
+    axios.put("http://localhost:8000/api/user/" + this.state.pk, this.state).then(() => {
       this.props.resetState();
       this.props.toggle();
     });
@@ -45,6 +52,10 @@ class NewPreferenceForm extends React.Component {
   };
 
   render() {
+    // console.log("this is the currentUser: ")
+    // console.log(this.state.currentUser)
+    // console.log("this is the result: (should be same as currentUser)")
+    // console.log(this.result)
     return (
       <Form onSubmit={this.props.preference ? this.editPreference : this.createPreference}>
         <FormGroup>

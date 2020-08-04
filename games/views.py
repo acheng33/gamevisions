@@ -125,6 +125,8 @@ def user_preferences(request, enc_username):
             serializer = UserPreferencesSerializer(
                 preferences_data, context={'request': request}, many=True)
 
+            print("this is the preference serializer.data:")
+            print(serializer.data)
             return Response(serializer.data)
     elif request.method == 'POST':
         pp.pprint(request.data)
@@ -184,7 +186,7 @@ def delete_preference(request, enc_username, enc_preference_key, enc_preference_
             cursor.execute("DELETE FROM games_preference WHERE username_id = %s AND preference_value = %s AND preference_key = %s", [
                            current_user, current_preference_value, current_preference_key])
         return Response(status=status.HTTP_204_NO_CONTENT)
-            
+
 
 @api_view(['GET'])
 def percentage_matches(request, enc_username):
@@ -216,3 +218,19 @@ def percentage_matches(request, enc_username):
             pp.pprint(games_data)
 
             return Response(games_data)
+
+@api_view(['GET'])
+def usernames_list(request):
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * FROM games_user')
+        data = dictfetchall(cursor)
+        print("this is the data:")
+        print(data)
+
+    serializer = UserSerializer(data, context={'request': request}, many=True)
+    print("this is the serializer data: ")
+    print(serializer.data)
+    # print("this is username:")
+    # print(list((serializer.data[0]).items())[0][1])
+    # print(Response(serializer.data))
+    return Response(serializer.data)

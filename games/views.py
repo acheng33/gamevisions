@@ -20,8 +20,8 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
-
-@api_view(['GET', 'POST'])  # /api/games
+#/api/games
+@api_view(['GET', 'POST'])
 def games_list(request):
     print("getting games list matching user")
     if request.method == 'GET':
@@ -64,8 +64,8 @@ def games_list(request):
                     "multiplayer"], request.data["cooperative"], request.data["mods"], request.data["game_name"]])
         return Response(status=status.HTTP_201_CREATED)
 
-
-@ api_view(['PUT'])  # /api/games/:enc_game_name
+#/api/games/:enc_game_name
+@ api_view(['PUT'])
 def game_details(request, enc_game_name):
     game_name = urllib.parse.unquote(enc_game_name)
     try:
@@ -96,8 +96,8 @@ def game_details(request, enc_game_name):
             print(connection.queries)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-@ api_view(['GET', 'POST'])  # /api/:enc_username
+#/api/:enc_username
+@ api_view(['GET', 'POST'])
 def user_preferences(request, enc_username):
     print("entered user_preferences")
     current_user = urllib.parse.unquote(enc_username)
@@ -193,7 +193,7 @@ def delete_preference(request, enc_username, enc_preference_key, enc_preference_
                            current_user, current_preference_value, current_preference_key])
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
+#api/usergames/:enc_username
 @api_view(['GET'])
 def percentage_matches(request, enc_username):
     current_user = urllib.parse.unquote(enc_username)
@@ -223,22 +223,32 @@ def percentage_matches(request, enc_username):
             pp.pprint(games_data)
 
             return Response(games_data)
-<<<<<<< HEAD
 
+#api/login
 @api_view(['GET'])
-def usernames_list(request):
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT * FROM games_user')
-        data = dictfetchall(cursor)
-        print("this is the data:")
-        print(data)
+def login_user(request):
+    if request.method == 'GET':
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM games_user WHERE username = %s AND pwd = %s", [request.data["username"], request.data["pwd"]])
+            data = dictfetchall(cursor)
 
-    serializer = UserSerializer(data, context={'request': request}, many=True)
-    print("this is the serializer data: ")
-    print(serializer.data)
-    # print("this is username:")
-    # print(list((serializer.data[0]).items())[0][1])
-    # print(Response(serializer.data))
-    return Response(serializer.data)
-=======
->>>>>>> 4af92cb629b3eee029bfaff630d465dc5ac50499
+            user_data = []
+            for key, value in data.items():
+                user_data.append(value)
+
+            pp.pprint(user_data)
+
+            serializer = UserSerializer(
+                user_data, context={'request': request}, many=True)
+
+            print("this is the preference serializer.data:")
+            print(serializer.data)
+            return Response(serializer.data)
+
+@api_view(['POST'])
+def register_user(request):
+    if request.method == 'POST':
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT INTO games_user(username, email, pwd) VALUES(%s, %s, %s)", [request.data["username"], request.data["email"], request.data["pwd"]])
+
+        return Response(status=status.HTTP_201_CREATED)

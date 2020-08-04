@@ -78,6 +78,7 @@ def game_details(request, enc_game_name):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     game = list(games)[0]
+    platform = request.data["platform_name"]
 
     print(len(games))
     print(game)
@@ -86,6 +87,11 @@ def game_details(request, enc_game_name):
         with connection.cursor() as cursor:
             resp = cursor.execute("UPDATE games_game SET release_year = %s, time_to_complete = %s, genre = %s WHERE game_name = %s ", [
                 request.data["release_year"], request.data["time_to_complete"], request.data["genre"], game_name])
+            cursor.execute(
+                """INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s) ON 
+                DUPLICATE KEY UPDATE platform_name = %s, rating = %s, single_player = %s, multiplayer = %s, cooperative = %s, mods = %s, game_name_id = %s""",
+                [request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data["multiplayer"], request.data["cooperative"], request.data["mods"],
+                    game_name, request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data["multiplayer"], request.data["cooperative"], request.data["mods"], game_name])
             print(resp)
             print(connection.queries)
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -210,7 +216,6 @@ def percentage_matches(request, enc_username):
                     game_with_percentages_dictionary[game["game_name"]]["platforms"] = [(
                         dict((k, game[k]) for k in ("platform_name", "rating", "single_player", "multiplayer", "cooperative", "mods", "percent_match")))]
 
-
             games_data = []
             for key, value in game_with_percentages_dictionary.items():
                 games_data.append(value)
@@ -218,6 +223,7 @@ def percentage_matches(request, enc_username):
             pp.pprint(games_data)
 
             return Response(games_data)
+<<<<<<< HEAD
 
 @api_view(['GET'])
 def usernames_list(request):
@@ -234,3 +240,5 @@ def usernames_list(request):
     # print(list((serializer.data[0]).items())[0][1])
     # print(Response(serializer.data))
     return Response(serializer.data)
+=======
+>>>>>>> 4af92cb629b3eee029bfaff630d465dc5ac50499

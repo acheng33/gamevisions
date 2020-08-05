@@ -7,15 +7,15 @@ class NewGameForm extends React.Component {
 
   state = {
     game_name: "",
-    release_year: 2020,
-    time_to_complete: 50,
+    release_year: null,
+    time_to_complete: null,
     genre: "",
     platform_name: "",
-    rating: 1,
-    single_player: 0,
-    multiplayer: 0,
-    cooperative: 0,
-    mods: 0
+    rating: null,
+    single_player: null,
+    multiplayer: null,
+    cooperative: null,
+    mods: null
   };
 
   componentDidMount() {
@@ -125,6 +125,7 @@ class NewGameForm extends React.Component {
             max={1}
             name="single_player"
             onChange={this.onChange}
+            placeholder = {"Enter a number here (1 for yes and 0 for No)"}
             value={this.defaultIfEmpty(this.state.single_player)}
           />
         </FormGroup>
@@ -136,6 +137,7 @@ class NewGameForm extends React.Component {
             max={1}
             name="multiplayer"
             onChange={this.onChange}
+            placeholder = {"Enter a number here (1 for yes and 0 for No)"}
             value={this.defaultIfEmpty(this.state.multiplayer)}
           />
         </FormGroup>
@@ -147,6 +149,7 @@ class NewGameForm extends React.Component {
             max={1}
             name="cooperative"
             onChange={this.onChange}
+            placeholder = {"Enter a number here (1 for yes and 0 for No)"}
             value={this.defaultIfEmpty(this.state.cooperative)}
           />
         </FormGroup>
@@ -158,6 +161,7 @@ class NewGameForm extends React.Component {
             max={1}
             name="mods"
             onChange={this.onChange}
+            placeholder = {"Enter a number here (1 for yes and 0 for No)"}
             value={this.defaultIfEmpty(this.state.mods)}
           />
         </FormGroup>

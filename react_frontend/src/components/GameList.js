@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { Table } from "reactstrap";
 import NewGameModal from "./NewGameModal";
 
-// import ConfirmRemovalModal from "./ConfirmRemovalModal";
-
 class GameList extends Component {
   render() {
     const games = this.props.games;

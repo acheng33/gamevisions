@@ -5,8 +5,6 @@ import NewGameModal from "./NewGameModal";
 
 import axios from "axios";
 
-import { API_URL } from "../constants/index";
-
 class Home extends Component {
   state = {
     games: []
@@ -17,7 +15,7 @@ class Home extends Component {
   }
 
   getGames = () => {
-    axios.get(API_URL).then(res => this.setState({ games: res.data }));
+    axios.get("http://localhost:8000/api/games/").then(res => this.setState({ games: res.data }));
   };
 
   resetState = () => {

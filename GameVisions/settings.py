@@ -85,15 +85,14 @@ WSGI_APPLICATION = 'GameVisions.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME' : 'test3',
+        'NAME' : 'gamevisions',
         'USER' : 'root',
-        'PASSWORD': '1234',
-        'HOST': '127.0.0.1',
-        'PORT': '3306'
-    }
+        'PASSWORD' : '',
+        }
 }
 
 

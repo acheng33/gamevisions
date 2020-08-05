@@ -3,8 +3,6 @@ import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 
 import axios from "axios";
 
-import { API_URL } from "../constants/index";
-
 class NewGameForm extends React.Component {
 
   state = {
@@ -114,6 +112,7 @@ class NewGameForm extends React.Component {
           <Input
             type="number"
             name="rating"
+            max={10}
             onChange={this.onChange}
             value={this.defaultIfEmpty(this.state.rating)}
           />

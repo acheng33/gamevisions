@@ -57,11 +57,18 @@ def games_list(request):
         print("inserting new games into database")
 
         with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO games_game (game_name, release_year, time_to_complete, genre) VALUES (%s, %s, %s, %s)", [
-                           request.data["game_name"], request.data["release_year"], request.data["time_to_complete"], request.data["genre"]])
-            cursor.execute("INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s)", [
-                request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data[
-                    "multiplayer"], request.data["cooperative"], request.data["mods"], request.data["game_name"]])
+            cursor.execute("SELECT * FROM games_game WHERE game_name = %s", [request.data["game_name"]])
+            data = dictfetchall(cursor)
+            if len(data) == 0:
+                cursor.execute("INSERT INTO games_game (game_name, release_year, time_to_complete, genre) VALUES (%s, %s, %s, %s)", [
+                            request.data["game_name"], request.data["release_year"], request.data["time_to_complete"], request.data["genre"]])
+                cursor.execute("INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s)", [
+                    request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data[
+                        "multiplayer"], request.data["cooperative"], request.data["mods"], request.data["game_name"]])
+            else :
+                cursor.execute("INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s)", [
+                    request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data[
+                        "multiplayer"], request.data["cooperative"], request.data["mods"], request.data["game_name"]])
         return Response(status=status.HTTP_201_CREATED)
 
 #/api/games/:enc_game_name

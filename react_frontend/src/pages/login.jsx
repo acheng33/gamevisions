@@ -1,22 +1,9 @@
-// import React from 'react';
-// import { Link } from 'react-router-dom';
-//
-//
-//
-// const Loginpage = () => {
-//   return (
-//     <div className="Loginpage">
-//       <div className="content">
-//         <h1>This is the login page </h1>
-//       </div>
-//     </div>
-//   );
-// };
-//
-// export default Loginpage;
+import React, { Component} from "react";
+import {connect} from "react-redux";
+import  { Redirect } from "react-router-dom";
 
 
-import React, { Component} from 'react';
+import {auth} from "../actions";
 
 class Login extends Component {
 
@@ -60,6 +47,9 @@ class Login extends Component {
   }
 
   render() {
+    if (this.props.isAuthenticated) {
+      return <Redirect to="/" />
+    }
     return (
       <div>
         <h1>Login user form</h1>
@@ -84,8 +74,28 @@ class Login extends Component {
     );
   }
 }
+const mapStateToProps = state => {
+  let errors = [];
+  if (state.Auth.errors) {
+    errors = Object.keys(state.auth.errors).map(field => {
+      return {field, message: state.auth.errors[field]};
+    });
+  }
+  return {
+    errors,
+    isAuthenticated: state.auth.isAuthenticated
+  };
+}
 
-export default Login;
+const mapDispatchToProps = dispatch => {
+  return {
+    login: (username, password) => {
+      return dispatch(auth.login(username, password));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
 // import React, { Fragment } from 'react';
 // import { Link } from 'react-router-dom';

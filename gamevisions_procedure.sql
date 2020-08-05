@@ -53,9 +53,8 @@ game_loop: BEGIN
                 SET rating_weight = 20;
             END IF;
 
-
             IF (number_genres > 0) THEN
-                IF (SELECT genre FROM games_game WHERE game_name = current_game_cur IN (SELECT DISTINCT preference_value FROM games_preference WHERE preference_key = "genre" AND username_id = username)) THEN
+                IF (SELECT genre FROM games_game WHERE game_name = current_game_cur AND genre IN (SELECT DISTINCT preference_value FROM games_preference WHERE preference_key = "genre" AND username_id = username)) THEN
                     SET current_percentage_match = current_percentage_match + genre_weight;
                 END IF;
             END IF;

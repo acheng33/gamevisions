@@ -107,6 +107,8 @@ def user_preferences(request, enc_username):
                 'SELECT * FROM games_user, games_preference WHERE games_user.username = games_preference.username_id AND games_user.username = %s', [current_user])
             data = dictfetchall(cursor)
 
+            print(data)
+
             user_preference_dictionary = {}
 
             for user in data:
@@ -115,7 +117,7 @@ def user_preferences(request, enc_username):
                         dict((k, user[k]) for k in ("preference_value", "preference_key")))
                 else:
                     user_preference_dictionary[user["username"]] = dict((k, user[k]) for k in (
-                        "username", "email", "pwd"))
+                        "username", "password"))
                     user_preference_dictionary[user["username"]]["preferences"] = [(
                         dict((k, user[k]) for k in ("preference_value", "preference_key")))]
 
@@ -132,8 +134,9 @@ def user_preferences(request, enc_username):
 
     elif request.method == 'POST':
         print("inserting a new preference for a given user")
+        print(current_user)
 
-        serializer = PreferenceSerializer(data=request.data)
+        serializer = PreferenceSerializer(data={"username_id": current_user, "preference_key": request.data["preference_key"], "preference_value": request.data["preference_value"]})
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -184,6 +187,7 @@ def delete_preference(request, enc_username, enc_preference_key, enc_preference_
             return Response(serializer.data)
 
     elif request.method == 'DELETE':
+        print("entered")
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM games_preference WHERE username_id = %s AND preference_value = %s AND preference_key = %s", [
                            current_user, current_preference_value, current_preference_key])
@@ -220,26 +224,25 @@ def percentage_matches(request, enc_username):
             return Response(games_data)
 
 #api/login
-@api_view(['GET'])
+@api_view(['POST'])
 def login_user(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         print("retrieving a user's information")
         with connection.cursor() as cursor:
             cursor.execute("SELECT * FROM games_user WHERE username = %s AND password = %s", [request.data["username"], request.data["password"]])
             data = dictfetchall(cursor)
 
-            user_data = []
-            for key, value in data.items():
-                user_data.append(value)
+            print(data)
 
-            pp.pprint(user_data)
+            if len(data) > 0:
+                serializer = UserSerializer(
+                    data[0], context={'request': request})
 
-            serializer = UserSerializer(
-                user_data, context={'request': request}, many=True)
-
-            print("this is the preference serializer.data:")
-            print(serializer.data)
-            return Response(serializer.data)
+                print("this is the preference serializer.data:")
+                print(serializer.data)
+                return Response(serializer.data)
+            else:
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
 def register_user(request):

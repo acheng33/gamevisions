@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import { Col, Container, Row } from "reactstrap";
 import GameRecommendList from "./GameRecommendList";
-// import NewGameModal from "./NewGameModal";
 
 import axios from "axios";
-
-// import { API_URL } from "../constants/index";
 
 class RecommendHome extends Component {
   state = {
@@ -17,8 +14,8 @@ class RecommendHome extends Component {
   }
 
   getGames = () => {
-    axios.get("http://localhost:8000/api/usergames/pengwing").then(res => this.setState({ games: res.data }));
-    console.log(axios.get("http://localhost:8000/api/usergames/pengwing").then(res => this.setState({ games: res.data })))
+    axios.get("http://localhost:8000/api/usergames/" + sessionStorage.getItem("username")).then(res => this.setState({ games: res.data }));
+    console.log(axios.get("http://localhost:8000/api/usergames/" + sessionStorage.getItem("username")).then(res => this.setState({ games: res.data })))
   };
 
   resetState = () => {

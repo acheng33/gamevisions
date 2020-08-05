@@ -3,8 +3,6 @@ import { Modal, ModalHeader, Button, ModalFooter } from "reactstrap";
 
 import axios from "axios";
 
-import { API_URL } from "../constants/index2";
-
 class RemovePreference extends Component {
   state = {
     modal: false
@@ -17,7 +15,7 @@ class RemovePreference extends Component {
   };
 
   deletePreference = (preference_key, preference_value) => {
-    axios.delete("http://localhost:8000/api/preferences/" + "pengwing/" + preference_key + "/" + preference_value).then(() => {
+    axios.delete("http://localhost:8000/api/preferences/" + sessionStorage.getItem("username") + "/" + preference_key + "/" + preference_value).then(() => {
       this.props.resetState();
       this.toggle();
     });

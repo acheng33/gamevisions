@@ -91,8 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME' : 'gamevisions',
         'USER' : 'root',
-        'PASSWORD' : '',
-        }
+    }
 }
 
 

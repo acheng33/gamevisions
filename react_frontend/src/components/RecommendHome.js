@@ -17,8 +17,8 @@ class RecommendHome extends Component {
   }
 
   getGames = () => {
-    axios.get("http://localhost:8000/api/usergames/gabby/").then(res => this.setState({ games: res.data }));
-    console.log(axios.get("http://localhost:8000/api/usergames/gabby/").then(res => this.setState({ games: res.data })))
+    axios.get("http://localhost:8000/api/usergames/pengwing").then(res => this.setState({ games: res.data }));
+    console.log(axios.get("http://localhost:8000/api/usergames/pengwing").then(res => this.setState({ games: res.data })))
   };
 
   resetState = () => {

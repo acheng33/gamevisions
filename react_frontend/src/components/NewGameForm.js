@@ -112,7 +112,7 @@ class NewGameForm extends React.Component {
           <Input
             type="number"
             name="rating"
-            max={10}
+            max={5}
             onChange={this.onChange}
             value={this.defaultIfEmpty(this.state.rating)}
           />

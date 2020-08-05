@@ -13,7 +13,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 
 def dictfetchall(cursor):
-    "Return all rows from a cursor as a dict"
+    # Return all rows from a cursor as a dict
     columns = [col[0] for col in cursor.description]
     return [
         dict(zip(columns, row))
@@ -27,7 +27,10 @@ def games_list(request):
         print("getting all games in the database")
         with connection.cursor() as cursor:
             cursor.execute(
-                'SELECT * FROM games_game, games_platform WHERE games_game.game_name = games_platform.game_name_id ')
+                """SELECT * 
+                FROM games_game, games_platform 
+                WHERE games_game.game_name = games_platform.game_name_id 
+                ORDER BY game_name""")
             data = dictfetchall(cursor)
 
             game_platform_dictionary = {}
@@ -57,18 +60,27 @@ def games_list(request):
         print("inserting new games into database")
 
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM games_game WHERE game_name = %s", [request.data["game_name"]])
+            cursor.execute("""SELECT * 
+                            FROM games_game 
+                            WHERE game_name = %s""", [request.data["game_name"]])
+
             data = dictfetchall(cursor)
+
             if len(data) == 0:
-                cursor.execute("INSERT INTO games_game (game_name, release_year, time_to_complete, genre) VALUES (%s, %s, %s, %s)", [
+                cursor.execute("""INSERT INTO games_game (game_name, release_year, time_to_complete, genre) 
+                            VALUES (%s, %s, %s, %s)""", [
                             request.data["game_name"], request.data["release_year"], request.data["time_to_complete"], request.data["genre"]])
-                cursor.execute("INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s)", [
-                    request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data[
-                        "multiplayer"], request.data["cooperative"], request.data["mods"], request.data["game_name"]])
+
+                cursor.execute("""INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) 
+                                VALUES (%s, %s, %s, %s, %s, %s, %s)""", [
+                                request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data[
+                                "multiplayer"], request.data["cooperative"], request.data["mods"], request.data["game_name"]])
             else :
-                cursor.execute("INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s)", [
-                    request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data[
-                        "multiplayer"], request.data["cooperative"], request.data["mods"], request.data["game_name"]])
+                cursor.execute("""INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) 
+                            VALUES (%s, %s, %s, %s, %s, %s, %s)""", [
+                            request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data[
+                            "multiplayer"], request.data["cooperative"], request.data["mods"], request.data["game_name"]])
+
         return Response(status=status.HTTP_201_CREATED)
 
 #/api/games/:enc_game_name
@@ -77,7 +89,10 @@ def game_details(request, enc_game_name):
     game_name = urllib.parse.unquote(enc_game_name)
     try:
         games = Game.objects.raw(
-            'SELECT * FROM games_game WHERE game_name = %s', [game_name])
+            """SELECT * 
+            FROM games_game 
+            WHERE game_name = %s""", [game_name])
+
     except Game.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -92,13 +107,19 @@ def game_details(request, enc_game_name):
     if request.method == 'PUT':
         print("updates games in the database or in the platform table")
         with connection.cursor() as cursor:
-            resp = cursor.execute("UPDATE games_game SET release_year = %s, time_to_complete = %s, genre = %s WHERE game_name = %s ", [
-                request.data["release_year"], request.data["time_to_complete"], request.data["genre"], game_name])
+            resp = cursor.execute("""UPDATE games_game 
+                                SET release_year = %s, time_to_complete = %s, genre = %s WHERE game_name = %s """, 
+                                [request.data["release_year"], request.data["time_to_complete"], request.data["genre"], game_name])
+
             cursor.execute(
-                """INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s) ON
-                DUPLICATE KEY UPDATE platform_name = %s, rating = %s, single_player = %s, multiplayer = %s, cooperative = %s, mods = %s, game_name_id = %s""",
-                [request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data["multiplayer"], request.data["cooperative"], request.data["mods"],
-                    game_name, request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data["multiplayer"], request.data["cooperative"], request.data["mods"], game_name])
+                """INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s) 
+                ON DUPLICATE KEY UPDATE platform_name = %s, rating = %s, single_player = %s, multiplayer = %s, cooperative = %s, mods = %s, game_name_id = %s""",
+
+                [request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data["multiplayer"], request.data["cooperative"], 
+                request.data["mods"], game_name, request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data["multiplayer"], 
+                request.data["cooperative"], request.data["mods"], game_name])
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 #/api/:enc_username
@@ -111,10 +132,14 @@ def user_preferences(request, enc_username):
         print("getting the preferences of a given user")
         with connection.cursor() as cursor:
             cursor.execute(
-                'SELECT * FROM games_user, games_preference WHERE games_user.username = games_preference.username_id AND games_user.username = %s', [current_user])
+                """SELECT * 
+                FROM games_user, games_preference 
+                WHERE games_user.username = games_preference.username_id AND games_user.username = %s 
+                ORDER BY games_preference.preference_key, games_preference.preference_value""", [current_user])
+
             data = dictfetchall(cursor)
 
-            print(data)
+            pp.pprint(data)
 
             user_preference_dictionary = {}
 
@@ -144,12 +169,15 @@ def user_preferences(request, enc_username):
         print(current_user)
 
         serializer = PreferenceSerializer(data={"username_id": current_user, "preference_key": request.data["preference_key"], "preference_value": request.data["preference_value"]})
+        
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO games_preference (preference_value, username_id, preference_key) VALUES (%s, %s, %s)", [
+            cursor.execute("""INSERT INTO games_preference (preference_value, username_id, preference_key) 
+                            VALUES (%s, %s, %s)""", [
                            request.data["preference_value"], current_user, request.data["preference_key"]])
+
         return Response(status=status.HTTP_201_CREATED)
 
 
@@ -167,7 +195,10 @@ def delete_preference(request, enc_username, enc_preference_key, enc_preference_
     if request.method == 'GET':
         with connection.cursor() as cursor:
             cursor.execute(
-                'SELECT * FROM games_user, games_preference WHERE games_user.username = games_preference.username_id AND games_user.username = %s', [current_user])
+                """SELECT * 
+                FROM games_user, games_preference 
+                WHERE games_user.username = games_preference.username_id AND games_user.username = %s""", [current_user])
+
             data = dictfetchall(cursor)
 
             user_preference_dictionary = {}
@@ -196,8 +227,10 @@ def delete_preference(request, enc_username, enc_preference_key, enc_preference_
     elif request.method == 'DELETE':
         print("entered")
         with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM games_preference WHERE username_id = %s AND preference_value = %s AND preference_key = %s", [
-                           current_user, current_preference_value, current_preference_key])
+            cursor.execute("""DELETE FROM games_preference 
+                            WHERE username_id = %s AND preference_value = %s AND preference_key = %s""", 
+                            [current_user, current_preference_value, current_preference_key])
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 #api/usergames/:enc_username
@@ -236,17 +269,18 @@ def login_user(request):
     if request.method == 'POST':
         print("retrieving a user's information")
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM games_user WHERE username = %s AND password = %s", [request.data["username"], request.data["password"]])
+            cursor.execute("""SELECT * 
+                            FROM games_user WHERE username = %s AND password = %s""",
+                            [request.data["username"], request.data["password"]])
+
             data = dictfetchall(cursor)
 
-            print(data)
+            pp.pprint(data)
 
             if len(data) > 0:
                 serializer = UserSerializer(
                     data[0], context={'request': request})
 
-                print("this is the preference serializer.data:")
-                print(serializer.data)
                 return Response(serializer.data)
             else:
                 return Response(status=status.HTTP_404_NOT_FOUND)
@@ -256,6 +290,8 @@ def register_user(request):
     if request.method == 'POST':
         print("adding a new user into the database")
         with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO games_user(username, password) VALUES(%s, %s)", [request.data["username"], request.data["password"]])
+            cursor.execute("""INSERT INTO games_user(username, password) 
+                            VALUES(%s, %s)""", 
+                            [request.data["username"], request.data["password"]])
 
         return Response(status=status.HTTP_201_CREATED)

@@ -1,15 +1,12 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-
-
+import RecommendHome from "../components/RecommendHome";
 
 const Recommendpage = () => {
   return (
-    <div className="Recommendpage">
-      <div className="content">
-        <h1>This is the game recommend page </h1>
-      </div>
-    </div>
+    <Fragment>
+      <RecommendHome />
+    </Fragment>
   );
 };
 

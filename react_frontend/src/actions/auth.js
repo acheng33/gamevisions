@@ -64,3 +64,5 @@ export const login = (username, password) => {
             })
     }
 }
+
+export default {loadUser, login};

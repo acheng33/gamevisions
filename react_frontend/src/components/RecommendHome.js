@@ -1,5 +1,6 @@
-import React, { Component } from "react";
-import { Col, Container, Row } from "reactstrap";
+import React, { Component, Fragment } from "react";
+import { Link } from 'react-router-dom';
+import { Button, Col, Container, Row } from "reactstrap";
 import GameRecommendList from "./GameRecommendList";
 
 import axios from "axios";
@@ -23,19 +24,36 @@ class RecommendHome extends Component {
   };
 
   render() {
+    var buttonGameList;
     console.log(this.state.games)
-    return (
-      <Container style={{ marginTop: "20px" }}>
-        <Row>
-          <Col>
-            <GameRecommendList
-              games={this.state.games}
-              resetState={this.resetState}
-            />
-          </Col>
-        </Row>
-        </Container>
+
+
+    buttonGameList = (
+      <Link to="/gamelist">
+        <Button color="primary"
+        className="float-left"
+        onClick={this.toggle}
+        style={{ minWidth: "200px" }}>Game List</Button>
+      </Link>
     );
+    return (
+      <Fragment>
+        {buttonGameList}
+        <Container style={{ marginTop: "20px" }}>
+          <Row>
+            <Col>
+              <GameRecommendList
+                games={this.state.games}
+                resetState={this.resetState}
+                />
+            </Col>
+          </Row>
+
+        </Container>
+      </Fragment>
+    );
+
+
   }
 }
 

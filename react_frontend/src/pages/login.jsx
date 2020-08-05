@@ -26,7 +26,7 @@ class Login extends Component {
 
   login = event => {
     fetch('http://127.0.0.1:8000/api/login/', {
-      method: 'POST',
+      method: 'GET',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(this.state.credentials)
     })

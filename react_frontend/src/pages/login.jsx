@@ -25,7 +25,7 @@ class Login extends Component {
   }
 
   login = event => {
-    fetch('http://127.0.0.1:8000/api/auth/login/', {
+    fetch('http://127.0.0.1:8000/api/login/', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(this.state.credentials)
@@ -40,7 +40,7 @@ class Login extends Component {
   }
 
   register = event => {
-    fetch('http://127.0.0.1:8000/api/users/', {
+    fetch('http://127.0.0.1:8000/api/register/', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(this.state.credentials)
@@ -86,3 +86,19 @@ class Login extends Component {
 }
 
 export default Login;
+
+// import React, { Fragment } from 'react';
+// import { Link } from 'react-router-dom';
+// import Login from "../components/login";
+//
+//
+//
+// const LogInpage = () => {
+//   return (
+//     <Fragment>
+//       <Login />
+//     </Fragment>
+//   );
+// };
+//
+// export default LogInpage;

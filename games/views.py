@@ -88,7 +88,7 @@ def game_details(request, enc_game_name):
             resp = cursor.execute("UPDATE games_game SET release_year = %s, time_to_complete = %s, genre = %s WHERE game_name = %s ", [
                 request.data["release_year"], request.data["time_to_complete"], request.data["genre"], game_name])
             cursor.execute(
-                """INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s) ON 
+                """INSERT INTO games_platform (platform_name, rating, single_player, multiplayer, cooperative, mods, game_name_id) VALUES (%s, %s, %s, %s, %s, %s, %s) ON
                 DUPLICATE KEY UPDATE platform_name = %s, rating = %s, single_player = %s, multiplayer = %s, cooperative = %s, mods = %s, game_name_id = %s""",
                 [request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data["multiplayer"], request.data["cooperative"], request.data["mods"],
                     game_name, request.data["platform_name"], request.data["rating"], request.data["single_player"], request.data["multiplayer"], request.data["cooperative"], request.data["mods"], game_name])
@@ -225,7 +225,7 @@ def login_user(request):
     if request.method == 'GET':
         print("retrieving a user's information")
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM games_user WHERE username = %s AND pwd = %s", [request.data["username"], request.data["pwd"]])
+            cursor.execute("SELECT * FROM games_user WHERE username = %s AND password = %s", [request.data["username"], request.data["password"]])
             data = dictfetchall(cursor)
 
             user_data = []
@@ -246,6 +246,6 @@ def register_user(request):
     if request.method == 'POST':
         print("adding a new user into the database")
         with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO games_user(username, email, pwd) VALUES(%s, %s, %s)", [request.data["username"], request.data["email"], request.data["pwd"]])
+            cursor.execute("INSERT INTO games_user(username, password) VALUES(%s, %s)", [request.data["username"], request.data["password"]])
 
         return Response(status=status.HTTP_201_CREATED)

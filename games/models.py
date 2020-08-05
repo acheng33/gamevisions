@@ -28,8 +28,7 @@ class Platform(models.Model):
 
 class User(models.Model):
     username = models.CharField(max_length = 50, primary_key = True)
-    email = models.EmailField()
-    pwd = models.CharField(max_length = 150)
+    password = models.CharField(max_length = 150)
 
     def __str__(self):
         return self.username

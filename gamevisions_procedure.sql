@@ -91,10 +91,6 @@ game_loop: BEGIN
                 SET current_percentage_match = current_percentage_match + ((matching_preferences / number_playstyle) * playstyle_weight);
             END IF;
 
-            IF (number_playstyle = 0) THEN
-                SET current_percentage_match = current_percentage_match + playstyle_weight;
-            END IF;
-
             INSERT IGNORE INTO percentage_table VALUES(current_game_cur, current_platform_cur, current_percentage_match);
 
         UNTIL complete2 END REPEAT platforms;

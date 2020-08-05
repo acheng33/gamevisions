@@ -25,20 +25,30 @@ class RecommendHome extends Component {
 
   render() {
     var buttonGameList;
+    var buttonCancel;
     console.log(this.state.games)
 
 
     buttonGameList = (
       <Link to="/gamelist">
         <Button color="primary"
-        className="float-left"
+        className="float-right"
         onClick={this.toggle}
         style={{ minWidth: "200px" }}>Game List</Button>
       </Link>
     );
+
+    buttonCancel = (
+      <Link to="/profile">
+        <Button color="primary"
+        className="float-left"
+        onClick={this.toggle}
+        style={{ minWidth: "200px" }}>Cancel</Button>
+      </Link>
+    );
+
     return (
       <Fragment>
-        {buttonGameList}
         <Container style={{ marginTop: "20px" }}>
           <Row>
             <Col>
@@ -48,7 +58,8 @@ class RecommendHome extends Component {
                 />
             </Col>
           </Row>
-
+          {buttonCancel}
+          {buttonGameList}
         </Container>
       </Fragment>
     );

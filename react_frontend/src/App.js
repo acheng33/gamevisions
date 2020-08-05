@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Loginpage from './pages/login';
 import Profilepage from './pages/profile';
@@ -23,6 +24,7 @@ class App extends Component {
               <Redirect to="/404"></Redirect>
             </Switch>
           </Router>
+          <Footer />
       </Fragment>
 
     );

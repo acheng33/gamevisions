@@ -102,7 +102,8 @@ game_loop: BEGIN
 
     SELECT games_game.*, games_platform.platform_name, games_platform.rating, games_platform.single_player, games_platform.multiplayer, games_platform.cooperative, games_platform.mods, percentage_table.percent_match 
     FROM percentage_table, games_game, games_platform
-    WHERE percentage_table.game_name = games_game.game_name AND percentage_table.game_name = games_platform.game_name_id AND percentage_table.platform_name = games_platform.platform_name AND percent_match > 0;
+    WHERE percentage_table.game_name = games_game.game_name AND percentage_table.game_name = games_platform.game_name_id AND percentage_table.platform_name = games_platform.platform_name AND percent_match > 0
+    ORDER BY percentage_table.percent_match DESC;
 
 END game_loop $$
 DELIMITER ;

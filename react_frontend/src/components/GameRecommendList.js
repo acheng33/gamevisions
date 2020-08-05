@@ -18,6 +18,7 @@ class GameRecommendList extends Component {
             <th>Multiplayer</th>
             <th>Cooperative</th>
             <th>Mods</th>
+            <th>Percent Match</th>
             <th></th>
           </tr>
         </thead>
@@ -42,6 +43,7 @@ class GameRecommendList extends Component {
                     <td>{platform.multiplayer ? "✅" : "❌"}</td>
                     <td>{platform.cooperative ? "✅" : "❌"}</td>
                     <td>{platform.mods ? "✅" : "❌"}</td>
+                    <td>{platform.percent_match}</td>
                     <td align="center">
                     </td>
                   </tr>

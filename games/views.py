@@ -11,7 +11,6 @@ from .serializers import *
 
 pp = pprint.PrettyPrinter(indent=4)
 
-
 def dictfetchall(cursor):
     # Return all rows from a cursor as a dict
     columns = [col[0] for col in cursor.description]
@@ -138,8 +137,6 @@ def user_preferences(request, enc_username):
                 ORDER BY games_preference.preference_key, games_preference.preference_value""", [current_user])
 
             data = dictfetchall(cursor)
-
-            pp.pprint(data)
 
             user_preference_dictionary = {}
 
